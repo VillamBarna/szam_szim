@@ -10,7 +10,7 @@ double x, v;           // position and velocity at time t
 int periods;           // number of periods to integrate
 int stepsPerPeriod;    // number of time steps dt per period
 const char* fileName;       // name of output file
-int eulerCromer;
+bool eulerCromer;
 
 void Euler(double dt);
 void EulerCromer(double dt);     // takes an Euler-Cromer step
@@ -81,7 +81,7 @@ void simulation ( ) {
             t += dt;
             file << t << '\t' << x << '\t' << v << '\n';
         }
-        /* cout << "Period = " << p << "\tt = " << t */
+        /* cout << "Period = " << p << "\tt = " << t << endl; */
         /*      << "\tx = " << x << "\tv = " << v */
         /*      << "\tenergy = " << energy() << endl; */
     }
