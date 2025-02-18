@@ -3,15 +3,14 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
-#include <string>
 using namespace std;
 
 double omega;          // the natural frequency
 double x, v;           // position and velocity at time t
 int periods;           // number of periods to integrate
 int stepsPerPeriod;    // number of time steps dt per period
-string fileName;       // name of output file
-bool eulerCromer;
+const char* fileName;       // name of output file
+int eulerCromer;
 
 void Euler(double dt);
 void EulerCromer(double dt);     // takes an Euler-Cromer step
@@ -61,7 +60,7 @@ double energy ( ) {
 }
 
 void simulation ( ) {
-    ofstream file(fileName.c_str());
+    ofstream file(fileName);
     if (!file) {
         cerr << "Cannot open " << fileName << "\nExiting ...\n";
         return ;
@@ -82,9 +81,9 @@ void simulation ( ) {
             t += dt;
             file << t << '\t' << x << '\t' << v << '\n';
         }
-        cout << "Period = " << p << "\tt = " << t
-             << "\tx = " << x << "\tv = " << v
-             << "\tenergy = " << energy() << endl;
+        /* cout << "Period = " << p << "\tt = " << t */
+        /*      << "\tx = " << x << "\tv = " << v */
+        /*      << "\tenergy = " << energy() << endl; */
     }
     file.close();
 }
