@@ -58,4 +58,5 @@ def feladat4():
 	plt.tight_layout()
 	plt.savefig("futasi_ido.png")
 
+print()
 feladat4()
