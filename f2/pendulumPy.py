@@ -1,4 +1,5 @@
 import pendulum
+import time
 import itertools
 import numpy as np
 import matplotlib.pyplot as plt
@@ -186,7 +187,7 @@ def dupla():
 
 
 L = 1.0
-res = (300, 300)
+res = (100, 100)
 theta = np.linspace(-np.pi, np.pi, res[0])
 theta2 = np.linspace(-np.pi, np.pi, res[1])
 omega = 0.0
@@ -194,22 +195,32 @@ omega2 = 0.0
 
 def f(t1, t2):
 	print(f"{(t1*len(theta)+t2)/(len(theta)*len(theta2))*100:.2f}%", end="\r")
-	return pendulum.flipover(L, theta[t1], omega, theta2[t2], omega2, 3100.0)
+	start = time.time()
+	tmp = pendulum.flipover(L, theta[t1], omega, theta2[t2], omega2, 10000*np.sqrt(1/9.8))
+	a = time.time() - start
+	return tmp, a
 
 def flipover():
 	pairs = itertools.product(range(res[0]), range(res[1]))
 	num_workers = multiprocessing.cpu_count()
 
+	start = time.time()
 	with multiprocessing.Pool(processes=num_workers) as pool:
 		results = [pool.apply_async(f, args=(arg1, arg2)) for arg1, arg2 in pairs]
 		results = [r.get() for r in results]  # Collect results dynamically
+	print(time.time() - start)
 
-	times = np.array(results)
+	results = np.array(results)
+	times = results[:, 0]
+	a = results[:, 1]
 	times[times==-1] = np.nan
 	times = np.reshape(times, res)
+	print(np.average(a))
+	print(np.std(a))
+	np.save("times", times)
 	# tmp = pendulum.flipover(L, theta[i], omega, theta2[j], omega2, 1000.0)
 	
 	norm = LogNorm(vmin=np.nanmin(times)+1e-6, vmax=np.nanmax(times))
 	plt.imshow(times.T, origin="lower", norm=norm)
-	plt.show()
+	plt.savefig("times.png", dpi=300)
 flipover()

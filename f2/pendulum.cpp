@@ -93,19 +93,22 @@ Vector f_double(const Vector& x) {
     double theta2 = x[3];
     double omega2 = x[4];
     double beta = theta - theta2;
+    double cosbeta = cos(beta);
+    double sinbeta = sin(beta);
+    double invdenom = 1/(L*(4-2*cosbeta*cosbeta));
     Vector f(5);
     f[0] = 1;
     f[1] = omega;
     f[2] = (- g * 3 * sin(theta)
 		  - g * sin(theta-2*theta2)
-		  - 2 * omega2*omega2 * L * sin(beta)
-		  - omega*omega * L * sin(2*beta))/
-            L/(3-cos(2*beta));
+		  - 2 * omega2*omega2 * L * sinbeta
+		  - omega*omega * L * 2*sinbeta*cosbeta)
+            *invdenom;
     f[3] = omega2;
-    f[4] = 2*sin(beta)*(2*omega*omega * L
+    f[4] = 2*sinbeta*(2*omega*omega * L
 		  + g * 2 * cos(theta)
-		  + omega2*omega2*L*cos(beta))/
-            L/(3-cos(2*beta));
+		  + omega2*omega2*L*cosbeta)
+            *invdenom;
     return f;
 }
 
